@@ -1,0 +1,119 @@
+<html>
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>Country Search By Shadab</title>
+</head>
+<style>
+    .bt12 {
+        padding: 8px;
+        background: green;
+        width: 100px;
+        border-radius: 6px;
+        outline: none;
+        border: none;
+        color: white;
+    }
+
+    .bt12:hover {
+        background: black;
+</style>
+
+<body>
+    <br /><br />
+    <center>
+        <input placeholder="Country Name" class="text-center" style="
+          width: 50%;
+          border-radius: 7px;
+          outline: none;
+          border: 0.5px solid green;
+          padding: 5px;
+        " type="text" id="ser" />
+        <button class="bt12" onclick="getall()">Search</button>
+    </center>
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Country</th>
+                    <th scope="col">Total Case</th>
+                    <th scope="col">Active Case</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    <script>
+
+        let count = 0;
+        let temparr = [];
+        async function getall() {
+            let c = document.getElementById("ser").value;
+            count = count + 1;
+            /* --------------validation ----------*/
+            if (temparr.length > 0 && temparr.includes(c) === true) {
+
+                alert('Sorry Duplicate Entry');
+
+            }
+            else {
+
+                temparr.push(c);
+
+                /* whenever a function return promise we use await before that methods like fetch() and data.json(); */
+
+                let data = await fetch(`https://api.covid19api.com/total/country/${c}`);
+                let actualdata = await data.json();
+                /* console.log(actualdata); */
+                document.getElementById("tableBody").innerHTML += `
+          <tr>
+              <th>${count}</th>
+              <th>${c}</th>
+              <th>${actualdata[174].Confirmed}</th>
+              <th>${actualdata[174].Active}</th>
+              <th><button type="button" class="btn btn-secondary btn-sm">Delete</button></th>
+          </tr>`;
+                let all_btns = document.getElementsByClassName("btn-secondary");
+                /* console.log(all_btns.length); */
+                for (i = 0; i < all_btns.length; i++) {
+                    all_btns[i].addEventListener("click", reomoveItem, false);
+                }
+                function reomoveItem(del) {
+                    let temp = document.getElementById("tableBody").firstElementChild;
+                    /* console.log(temp.firstElementChild.nextElementSibling.innerHTML); */
+                    let deleteditem = temp.firstElementChild.nextElementSibling.innerHTML;
+                    temparr = temparr.filter(function (item) {
+                        return item !== deleteditem;
+                        /* deleting that item from our array for furture entry  */
+                    });
+                    temp.remove();
+                    console.log(all_btns.length);
+                    /* temparr.pop(); */
+                    /* console.log(temparr); */
+                }
+            }
+        }
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
